@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>IB project {login page}</title>
+	<script src="js/jquery-2.1.4.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="css/main.css"/>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/login.js" type="text/javascript"></script>
+    <script src="js/main.js" type="text/javascript"></script>
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-fixed-top" style="background-color: #e3f2fd;">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="login.html">IB Project</a>
+			</div>
+				<div class="collapse navbar-collapse" id="mMenu">
+					<ul class="nav navbar-nav navbar-right" id="navBarLogIn">
+						
+						<li><label id="userRole"></label></li>
+						<li><a target="_self"  id="downloadJKS" onclick="downloadJks()"> Download my jks</a></li>
+                    	<li><a target="_self" data-toggle="modal" onclick="logout()"> Logout</a></li>
+                    	
+                    </ul>
+
+
+                    <ul class="nav navbar-nav navbar-right" id="navBarNotLogIn">
+                       	<li>
+                        	<a  data-toggle="modal" href="#loginModal" ></span> Login</a>
+                        </li>
+                        <li>
+                        	<a data-toggle="modal" href="#registerModal"></span> Register</a>
+                        </li>
+                        
+                    </ul>
+				</div>
+			</div>
+		
+	</nav>
+	<div class="modal fade" id="loginModal">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title">Login user.</h3>
+                    </div>
+                    <div class="modal-header">
+                    	<div class="form-group">
+                    		<label>Email*:</label><input type="text" placeholder="Email..." name="email" id="loginEmail" required>
+            				<label>Password*:</label><input type="password" placeholder="Password..." name="password" id="loginPassword" required>
+            				<a href="#registerModal"><br>Don't have account? Click here to sign up</a>
+                        	
+                    	</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger btn-block"  onclick="login()">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="registerModal">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title">Register user.</h3>
+                    </div>
+                    <div class="modal-header">
+                    	<div class="form-group">
+                        	<label>Email*:</label><input type="text" placeholder="Email..." name="email" id="registerEmail" required>
+            				<label>Password*:</label><input type="password" placeholder="Password..." name="password" id="registerPassword" required>
+                    	</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger btn-block"  onclick="register()">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main">
+        	<table id="myTable" class="table table-bordered"></table>
+				
+			<table id="myInactiveTable" class="table table-bordered"></table>
+
+
+        </div>
+
+</body>
+
+</html>

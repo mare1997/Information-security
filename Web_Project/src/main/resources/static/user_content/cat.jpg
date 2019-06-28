@@ -1,0 +1,286 @@
+$(document).ready(function() {
+	var token = localStorage.getItem("token");
+	console.log(token)
+	if (token == "undefined" || token == null || token == "null") {
+		console.log("nije logovan")
+		$('#userRole').text("Moras da se ulogujes!")
+		var y = document.getElementById("navBarNotLogIn");
+		y.style.display = "block";
+		var y = document.getElementById("navBarLogIn");
+		y.style.display = "none";
+		
+		
+	} else {
+		whoAmI()
+		var y = document.getElementById("navBarNotLogIn");
+		y.style.display = "none";
+		var y = document.getElementById("navBarLogIn");
+		y.style.display = "block";
+
+	}
+});
+
+function tableHeader(){
+	var table =  $('#myTable');
+	table.empty();
+	table.append('<tr>'+
+				'<th>Active Users</th>'+
+				'<th><button onclick=" fillActiveTable()" class="btn btn-danger">Refresh</button></th>'+
+				'</tr>'+
+				'<tr>'+
+					'<th><input id="paramActive" type="text" placeholder="Search users..." ></th>'+
+					'<th><button onclick="searchActiveUsers()" class="btn btn-default">Submit</button</th>'+
+				'</tr>'+
+				'<tr>'+
+					'<th>Email</th>'+
+					'<th>Download Certificate</th>'+
+				'</tr>');
+}
+
+function fillActiveTable(){
+	var token = localStorage.getItem("token");
+	tableHeader();
+	$.ajax({
+		url:'https://localhost:8081/api/users/active',
+		headers:{Authorization:"Bearer " + token},
+		type: 'GET',
+		dataType:'json',
+		crossDomain: true,
+		success:function(response){
+			if(response.length == 0){
+				var table =  $('#myTable');
+				table.empty();
+				alert("Tabela usera je prazna.")
+				return;
+			}
+			for(var i=0; i<response.length; i++) {
+				var table =  $('#myTable');
+				user = response[i];
+				console.log(user.email);
+				table.append('<tr>'+
+								'<td>'+user.email+'</td>'+
+								'<td><a onclick="downloadCertificate(\''+user.certificate+'\')" >'+ user.certificate +'.cer </a></td>'+
+							'</tr>');
+			}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {  
+			if(jqXHR.status=="404"){
+				alert("User name certificate.");
+			}
+		}
+	});
+
+
+}
+
+function tableInactiveHeader(){
+	var table =  $('#myInactiveTable');
+	table.empty();
+	table.append('<tr>'+
+				'<th>Inactive Users</th>'+
+				'<th><button onclick="fillInactiveTable()" class="btn btn-danger">Refresh</button></th>'+
+				'</tr>'+
+				'<tr>'+
+					'<th><input id="paramInactive" type="text" placeholder="Search inactive users..."></th>'+
+					'<th><button onclick="searchInactiveUsers()" class="btn btn-default">Submit</button</th>'+
+				'</tr>'+
+				'<tr>'+
+					'<th>Email</th>'+
+					'<th>Acivate</th>'+
+				'</tr>');
+}
+
+function fillInactiveTable(){
+	var token = localStorage.getItem("token");
+	tableInactiveHeader();
+	$.ajax({
+		url:'https://localhost:8081/api/users/inactive',
+		headers:{Authorization:"Bearer " + token},
+		type: 'GET',
+		dataType:'json',
+		crossDomain: true,
+		success:function(response){
+			if(response.length == 0){
+				var table =  $('#myInactiveTable');
+				table.empty();
+				return;
+			}
+			for(var i=0; i<response.length; i++) {
+				var table =  $('#myInactiveTable');
+				user = response[i];
+				console.log(user.email);
+				table.append('<tr>'+
+								'<td>'+user.email+'</td>'+
+								'<td><button onclick="activateUser('+user.id+')" class="btn btn-primary">Activate</button></td>'+
+							'</tr>');
+			}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus+" "+jqXHR.status)
+		}
+	});
+}
+
+function searchActiveUsers(){
+	var param = $('#paramActive').val().trim();
+	if(param==""){
+		alert("Moras uneti email za pretragu.")
+		return;
+	}
+	var token = localStorage.getItem("token");
+	tableHeader();
+	$.ajax({
+		url:'https://localhost:8081/api/users/search/active/'+param,
+		headers:{Authorization:"Bearer " + token},
+		type: 'GET',
+		dataType:'json',
+		crossDomain: true,
+		success:function(response){
+			for(var i=0; i<response.length; i++) {
+				var table =  $('#myTable');
+				user = response[i];
+				console.log(user.email);
+				table.append('<tr>'+
+								'<td>'+user.email+'</td>'+
+								'<td><button class="btn btn-default">Download</button></td>'+
+							'</tr>');
+			}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus+" "+jqXHR.status)
+		}
+	});
+}
+function searchInactiveUsers(){
+	
+	var param = $('#paramInactive').val().trim();
+	if(param==""){
+		alert("Moras uneti email za pretragu.")
+		return;
+	}
+	var token = localStorage.getItem("token");
+	tableInactiveHeader();
+	$.ajax({
+		url:'https://localhost:8081/api/users/search/inactive/'+param,
+		headers:{Authorization:"Bearer " + token},
+		type: 'GET',
+		dataType:'json',
+		crossDomain: true,
+		success:function(response){
+			for(var i=0; i<response.length; i++) {
+				var table =  $('#myInactiveTable');
+				user = response[i];
+				console.log(user.email);
+				table.append('<tr>'+
+								'<td>'+user.email+'</td>'+
+								'<td><button onclick="activateUser('+user.id+')" class="btn btn-default">Activate</button></td>'+
+							'</tr>');
+			}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus+" "+jqXHR.status)
+		}
+	});
+}
+
+function activateUser(id){
+	var token = localStorage.getItem("token");
+	console.log(id)
+	$.ajax({
+		type: 'PUT',
+		headers:{"Authorization" :"Bearer " + token},
+        url: 'https://localhost:8081/api/users/activate/'+id,
+        dataType: 'json',
+        crossDomain: true,
+		cache: false,
+		processData: false,
+		success:function(response){
+			alert("User je aktiviran.");
+			fillActiveTable();
+			fillInactiveTable();
+		},
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus+" "+jqXHR.status)
+		}
+	});
+}
+function whoAmI(){
+	var token = localStorage.getItem("token");
+	$.ajax({
+		type: 'PUT',
+		headers:{"Authorization" :"Bearer " + token},
+        url: 'https://localhost:8081/api/users/whoami',
+        dataType: 'json',
+        crossDomain: true,
+		cache: false,
+		processData: false,
+		success:function(response){
+			console.log(response);
+			for ( var i in response.authorities) {
+				console.log(i);
+				console.log(response.authorities[i].name);
+				$('#userRole').text(response.authorities[i].name);
+				if(response.authorities[i].name=="ADMIN"){
+					fillInactiveTable();
+				}
+			}
+			fillActiveTable();
+		},
+		error: function (jqXHR, textStatus, errorThrown) {  
+			alert(textStatus+" "+jqXHR.status)
+		}
+	});
+}
+function logout(){
+	localStorage.removeItem("token");
+	window.location.replace("https://localhost:8081/main.html");
+}
+function downloadCertificate(email){
+	var token = localStorage.getItem("token");
+	console.log(token);
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', "/api/demo/download/cer/"+email, true);
+	xhr.setRequestHeader("Authorization", "Bearer " + token);
+	xhr.responseType = 'blob';
+
+	xhr.onload = function(e) {
+		if (this.status == 200) {
+			var blob = this.response;
+			console.log(blob);
+			var a = document.createElement('a');
+			var url = window.URL.createObjectURL(blob);
+			a.href = url;
+			a.download = xhr.getResponseHeader('filename');
+			a.click();
+			window.URL.revokeObjectURL(url);
+		}
+	};
+
+	xhr.send();
+}
+function downloadJks(){
+	var token = localStorage.getItem("token");
+	console.log(token);
+	var email = localStorage.getItem("email");
+	console.log(email);
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', "/api/demo/download/jks/"+email, true);
+	xhr.setRequestHeader("Authorization", "Bearer " + token);
+	xhr.responseType = 'blob';
+
+	xhr.onload = function(e) {
+		if (this.status == 200) {
+			var blob = this.response;
+			console.log(blob);
+			var a = document.createElement('a');
+			var url = window.URL.createObjectURL(blob);
+			a.href = url;
+			a.download = xhr.getResponseHeader('filename');
+			a.click();
+			window.URL.revokeObjectURL(url);
+		}
+	};
+
+	xhr.send();
+}

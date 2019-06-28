@@ -1,0 +1,18 @@
+--https://www.dailycred.com/article/bcrypt-calculator
+INSERT INTO users(email,password,certificate,active)VALUES('admin','$2a$04$bAsNVI05EjajIzH4AHFdu.RimWMl2K5hmnzeBrcqRX7Cm8BtMgIFK',"admin",true)
+INSERT INTO users(email,password,certificate,active)VALUES('usera','$2a$04$bAsNVI05EjajIzH4AHFdu.RimWMl2K5hmnzeBrcqRX7Cm8BtMgIFK',"usera",true)
+INSERT INTO users(email,password,certificate,active)VALUES('userb','$2a$04$bAsNVI05EjajIzH4AHFdu.RimWMl2K5hmnzeBrcqRX7Cm8BtMgIFK',"usera",true)
+INSERT INTO users(email,password,certificate,active)VALUES('dare','$2a$04$bAsNVI05EjajIzH4AHFdu.RimWMl2K5hmnzeBrcqRX7Cm8BtMgIFK',"dare",false)
+INSERT INTO users(email,password,certificate,active)VALUES('nele','$2a$04$bAsNVI05EjajIzH4AHFdu.RimWMl2K5hmnzeBrcqRX7Cm8BtMgIFK',"nele",false)
+INSERT INTO users(email,password,certificate,active)VALUES('jaka','$2a$04$bAsNVI05EjajIzH4AHFdu.RimWMl2K5hmnzeBrcqRX7Cm8BtMgIFK',"jaka",false)
+
+
+INSERT INTO authority(name)VALUES('ADMIN')
+INSERT INTO authority(name)VALUES('REGULAR')
+
+INSERT INTO user_authority(user_id,authority_id)VALUES(1,1)
+INSERT INTO user_authority(user_id,authority_id)VALUES(2,2)
+INSERT INTO user_authority(user_id,authority_id)VALUES(3,2)
+INSERT INTO user_authority(user_id,authority_id)VALUES(4,2)
+INSERT INTO user_authority(user_id,authority_id)VALUES(5,2)
+INSERT INTO user_authority(user_id,authority_id)VALUES(6,2)
